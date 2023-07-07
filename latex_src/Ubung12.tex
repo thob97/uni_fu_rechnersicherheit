@@ -1,0 +1,69 @@
+\input{src/header}
+\graphicspath{ {./src/} } 
+\usepackage{hyperref}
+
+\newcommand{\dozent}{Volker Roth}
+\newcommand{\tutor}{Oliver Wiese}
+\newcommand{\tutoriumNo}{02\\Materialien: Latex, VSC, Skript}
+\newcommand{\ubungNo}{03}
+\newcommand{\veranstaltung}{Rechnersicherheit}
+\newcommand{\semester}{SoSe 21}
+
+% /////////////////////// BEGIN DOKUMENT /////////////////////////
+\begin{document}
+\input{src/titlepage}
+
+% /////////////////////// Task 1 /////////////////////////
+\section{Take-grant protection model}
+\begin{enumerate}[(a)]
+   
+    
+\end{enumerate}
+
+% /////////////////////// Task 2 /////////////////////////
+\section{Project: Access control}
+Our project contains sensitive files, e.g. password table, log files and chat history. In this exercise, we like to improve our chat program and to study access control in practice. First, we do a code review of our own project (or if your project does not include attachments, a reviewed project of our peers). Later we will try to improve this project. In your client users can upload files and we are now interested if they can overwrite files.
+\begin{enumerate}[(a)]
+    % /////////////////////// a /////////////////////////
+    \item {\itshape Can a user overwrite a previous attachment? If so, give an example (e.g. the message or a function with the message). If not, explain why not.}
+    \begin{itemize}
+        \item Yes, it's possible. Because a file that a user has sent to the server is automatically downloaded by all other users.
+        \item Also the file retains its original name and overwrites any existing files.
+        \lstinputlisting[language=python, linerange={53-57,62-66}, firstnumber = 53]{src/u12/commands_client.py}
+
+        \item We fixed it by testing beforehand whether a file with the name already exists.
+        \lstinputlisting[language=python, linerange={53-66}, firstnumber = 53]{src/u12/commands_client.py}
+    \end{itemize}
+    
+    % /////////////////////// b /////////////////////////
+    \item {\itshape Can  a  user  overwrite  the  log  file?  If  so,  give  an  example  (e.g.  the  message  or  a function with the message). If not, explain why not.}
+    \begin{itemize}
+        \item Not possible because sent files are not stored on the servers file system. (But only in the cache)
+        \item But the log files are on the server. So there is most likely no way to overwrite them.
+    \end{itemize}
+
+    % /////////////////////// c /////////////////////////
+    \item {\itshape Can a user overwrite the password file? If so, give an example (e.g. the message or a function with the message). If not, explain why not.}
+    \begin{itemize}
+        \item Not possible because sent files are not stored on the servers file system. (But only in the cache)
+        \item But the password file is on the server. So there is most likely no way to overwrite it.
+    \end{itemize}
+
+    % /////////////////////// d /////////////////////////
+    \item {\itshape Discuss possible counter measurements against these attacks. What can the developer do to prevent such attacks? Can the operating system prevent these attacks? If so, how should be the program look like?}
+    \begin{itemize}
+        \item There are multiple possibilities. Either you bypass the possibility of such an attack as we just did. By not allowing the possibility at all.
+        \item Or you theoretically allow the possibility for such attacks in your code. But then add different roles and policies through the OS or your code, so that your code has no privilege to do such attacks.
+        \item You could implement that in your code yourself.
+        \item Or regulate it through the OS. For example, you could only request a few or special 'system rights' from the OS, with the client program. So that the client program has no rights to overwrite a existing file.
+    \end{itemize}
+    
+    % /////////////////////// e /////////////////////////
+    \item {\itshape Improve your code/docker file to prevent such attacks.}
+    \begin{itemize}
+        \item Done.
+    \end{itemize}
+
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,82 @@
+\input{src/header}
+\graphicspath{ {./src/} } 
+\usepackage{hyperref}
+
+\newcommand{\dozent}{Volker Roth}
+\newcommand{\tutor}{Oliver Wiese}
+\newcommand{\tutoriumNo}{02\\Materialien: Latex, VSC, Skript}
+\newcommand{\ubungNo}{03}
+\newcommand{\veranstaltung}{Rechnersicherheit}
+\newcommand{\semester}{SoSe 21}
+
+% /////////////////////// BEGIN DOKUMENT /////////////////////////
+\begin{document}
+\input{src/titlepage}
+
+% /////////////////////// Task 1 /////////////////////////
+\section{SA and EM}
+In class we discussed static analysis and execution monitors. We like to recap and discuss some concepts.
+\begin{enumerate}[(a)]
+    % /////////////////////// a /////////////////////////
+    \item {\itshape Discuss differences between safety and liveness properties.}
+    \begin{itemize}
+        \item Safety stipulate that “bad things never happen” during execution.
+        \item in contrast to liveness properties which stipulate that, eventually, “good things will happen” during execution.
+    \end{itemize}
+     
+    % /////////////////////// b /////////////////////////
+    \item {\itshape Discuss differences between SA and EM mechanisms.}
+    \begin{itemize}
+        \item A SA mechanism takes a program $a$ and {decides if it fits the policy, afterwards it returns a program}. If it does, the initial program $a$ is returned. Else a different program is returned, which halts on every input.
+        \item A EM mechanism takes a program $a$ and returns a created program $b$. $b$ runs $a$ and \\ {observes in the run time if $a$ violates the policy}. If it does, $b$ halts. {$b$ can only observe a single execution of $a$.}
+        \item So SA happens befor runtime and EM in runtime
+        \item Also Every SA mechanism is also enforceable by an EM mechanism, but not the contrary.
+        
+    \end{itemize}
+
+    % /////////////////////// c /////////////////////////
+    \item {\itshape Give a practical example of SA mechanisms.}
+    \begin{itemize}
+        \item type-safe for program languages (such as Java)
+        \item standard virus scanners
+    \end{itemize}
+
+
+    % /////////////////////// d /////////////////////////
+    \item {\itshape Give a practical example of EM mechanisms.}
+    \begin{itemize}
+        \item Software testing (memory leaks, out-of-bounds array accesses, race conditions, atomicity, etc.)
+        \item Auditing and Logging
+    \end{itemize}
+
+    
+\end{enumerate}
+
+% /////////////////////// Task 2 /////////////////////////
+\section{Security Policies in our Project}
+In class we discussed security policies in a very formal way. In this exercise we focus on some  practical  aspects  of  security  policies  in  context  of  your  project  (chat server and client).
+\begin{enumerate}[(a)]
+    % /////////////////////// a /////////////////////////
+    \item {\itshape Give  three  relevant  security  policies  for  your  project.  The  description  of  security policies can be informal.}
+    \begin{enumerate}[1.]
+        \item Users should not be able to see whenever a new user connected or disconnected from the server
+        \item User should not be able to change any data in the programm (code)
+        \item Policies for different account privileges. (Admins can delete msgs, while users are unable to)
+    \end{enumerate}
+    
+    % /////////////////////// b /////////////////////////
+    \item {\itshape For each above security policy: Who should enforce the policy? The operating system, your program or someone else?}
+    \begin{enumerate}[1.]
+        \item The 1st and 3rd policies are somewhat similar; both could also be \underline{implemented in code}. For 1. simply omit the option, and for 3. restrict the option to admin accounts.
+        \item 2. Should be \underline{handled by the operating system}. 
+    \end{enumerate}
+
+    % /////////////////////// c /////////////////////////
+    \item {\itshape For each security policy: How can be your security policies enforced? With a SA or EM mechanism?}
+    \begin{itemize}
+        \item We'd choose for every policy a EM mechanims. (Especially because an em mechanism can simulate an sa mechanism :)
+    \end{itemize}
+
+\end{enumerate}
+
+\end{document}

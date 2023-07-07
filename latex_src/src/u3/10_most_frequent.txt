@@ -1,0 +1,11 @@
+   frequentcys  passwords
+0       290729     123456
+1        79076      12345
+2        76789  123456789
+3        59462   password
+4        49952   iloveyou
+5        33291   princess
+6        21725    1234567
+7        20901    rockyou
+8        20553   12345678
+9        16648     abc123

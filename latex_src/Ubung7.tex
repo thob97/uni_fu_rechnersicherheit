@@ -1,0 +1,153 @@
+\input{src/header}
+\graphicspath{ {./src/} } 
+\usepackage{hyperref}
+
+\newcommand{\dozent}{Volker Roth}
+\newcommand{\tutor}{Oliver Wiese}
+\newcommand{\tutoriumNo}{02\\Materialien: Latex, VSC, Skript}
+\newcommand{\ubungNo}{07}
+\newcommand{\veranstaltung}{Rechnersicherheit}
+\newcommand{\semester}{SoSe 21}
+
+% /////////////////////// BEGIN DOKUMENT /////////////////////////
+\begin{document}
+\input{src/titlepage}
+
+% /////////////////////// Task 1 /////////////////////////
+\section{Rainbow tables}
+\includegraphics[width=\textwidth]{src/u7/task1.png}
+\begin{enumerate}[(a)]
+
+    % /////////////////////// a /////////////////////////
+    \item {\itshape Find one inverse of the hash value 91 using the table above and document your steps.}
+    \begin{itemize}
+        \item We have two different approaches.
+        \begin{enumerate}[1.]
+            \item \textbf{Solution}: Finding the inverse of the hash value $h_1$ = 91, by using R and H on \underline{$h_1$}. 
+                \begin{enumerate}[{1}.1]
+                    \item Search for $h_1$ = 91 in the table (end point column) $\rightarrow$ not found.
+                    \item Use the regeneration function R on $h_1$ $\rightarrow$ R(91) = 9126
+                    \item Use the hash function H on the result $\rightarrow$ H(9126) = 17
+                    \item (And now repeat these steps until found): 
+                    \\ Search for $h_1$ = 17 in the table (end point column) $\rightarrow$ not found.
+                    \item Use the regeneration function R on $h_1$ $\rightarrow$ R(17) = 1742
+                    \item Use the hash function H on the result $\rightarrow$ H(1742) = 59
+                    \item Search for $h_1$ = 59 in the table (end point column) $\rightarrow$ found entry!
+                \end{enumerate}
+                  
+            \
+            \item \textbf{Solution}: Finding the inverse of the hash value 91, by using R and H on \underline{every end point entry} of the hash table.
+                \begin{enumerate}[{2}.1]
+                
+                    \item Search for 91 in the table (end point column) $\rightarrow$ not found.
+                    \item Use the regeneration function R on every entry of that column:
+                    \\{%\Large
+                    \begin{tabular}{c c c}
+                        \textbf{start point} & \textbf{\textcolor{blue}{R(\textcolor{green}{end point})}} & \textbf{\textcolor{green}{end point}} \\
+                        2345 & 3672 & 37 \\
+                        7033 & 9722 & 97 \\
+                        4234 & 7904 & 79 \\
+                        3400 & 1146 & 11 \\
+                        1234 & 5984 & 59 \\
+                        7455 & 7105 & 71 
+                    \end{tabular}
+                    } 
+                    
+                    \item Use the hash function H on every result:
+                    \\{%\Large
+                    \begin{tabular}{c c c c}
+                        \textbf{start point} & \textbf{\textcolor{blue}{H(\textcolor{green}{R})}} & \textbf{\textcolor{green}{R}} & \textbf{end point} \\
+                        2345 & 99 & 3672 & 37 \\
+                        7033 & 19 & 9722 & 97 \\
+                        4234 & 73 & 7904 & 79 \\
+                        3400 & 57 & 1146 & 11 \\
+                        1234 & 33 & 5984 & 59 \\
+                        7455 & 76 & 7105 & 71 
+                    \end{tabular}
+                    } 
+                    
+                    
+                    \item (And now repeat these steps until found): 
+                    \\ Search for 91 in the table (newly calculated hash column) $\rightarrow$ not found.
+                    \item Use the regeneration function R on every entry of that column:
+                    \\{%\Large
+                    \begin{tabular}{c c c c c}
+                        \textbf{start point} & \textbf{\textcolor{blue}{R(\textcolor{green}{H})}} & \textbf{\textcolor{green}{H}} & \textbf{R} & \textbf{end point} \\
+                        2345 & 9924 & 99 & 3672 & 37 \\
+                        7033 & 1944 & 19 & 9722 & 97 \\
+                        4234 & 7308 & 73 & 7904 & 79 \\
+                        3400 & 5782 & 57 & 1146 & 11 \\
+                        1234 & 3368 & 33 & 5984 & 59 \\
+                        7455 & 7610 & 76 & 7105 & 71 
+                    \end{tabular}
+                    }
+                    
+                    \item Use the hash function H on every result:
+                    \\{%\Large
+                    \begin{tabular}{c c c c c c}
+                        \textbf{start point} & \textbf{\textcolor{blue}{H(\textcolor{green}{R})}} & \textbf{\textcolor{green}{R}} & \textbf{H} & \textbf{R} & \textbf{end point} \\
+                        2345 & 13 & 9924 & 99 & 3672 & 37 \\
+                        7033 & 53 & 1944 & 19 & 9722 & 97 \\
+                        4234 & 71 & 7308 & 73 & 7904 & 79 \\
+                        3400 & 39 & 5782 & 57 & 1146 & 11 \\
+                        1234 & 91 & 3368 & 33 & 5984 & 59 \\
+                        7455 & 77 & 7610 & 76 & 7105 & 71 
+                    \end{tabular}
+                    }
+                    \item Search for 91 in the table (newly calculated hash column) $\rightarrow$ entry found!
+                    
+                    
+                \end{enumerate}
+        \end{enumerate} 
+    \end{itemize}
+\end{enumerate}
+
+% /////////////////////// Task 2 /////////////////////////
+\section{Your project}
+\begin{enumerate}[(a)]
+    % /////////////////////// a /////////////////////////
+    \item {\itshape Personal message: A user should be able to send a personal message to another user. We still have one global chat room.}
+    \begin{itemize}
+        \item For this we just added a 'Command Handler' on the Server side. Example of it working:
+        
+        \includegraphics[width=\textwidth]{src/u7/1.png}
+        
+        \item Implementation:
+        
+        \lstinputlisting[language=python, linerange={18-35}, firstnumber = 18]{src/u7/commands_server.py}
+
+    \end{itemize}
+    
+    
+    % /////////////////////// b /////////////////////////
+    \item {\itshape History: A user should have access to a communication history (for global chat and personal messages). The history has to be stored on the server side.}
+    \begin{itemize}
+        \item For this we added a 'log Handler' (history), which creates/write/returns log files of users and the global log file.
+        We also added a new function in the 'Command Handler' on the server side. Example of it working:
+        
+        \includegraphics[width=\textwidth]{src/u7/2.png}
+        \includegraphics[width=\textwidth]{src/u7/3.png}
+
+\newpage        
+        \item Implementation:
+        
+        \lstinputlisting[language=python, linerange={37-46}, firstnumber = 37]{src/u7/commands_server.py}
+        \lstinputlisting[language=python]{src/u7/log_handler.py}
+    \end{itemize}Implementation
+
+\newpage
+    % /////////////////////// c /////////////////////////
+    \item {\itshape Attachments: A user should be able to send files to other users and the chat room. Files should be stored on the server side (as part of the history) and client side (such that the user can open the file).}
+    \begin{itemize}
+        \item As for now the file is not saved on the client side. It will only print on his console. For this we added a 'Command Handler' on the client side. Example of it working:
+        
+        \includegraphics[width=\textwidth]{src/u7/4.png}
+        
+        \item Implementation:
+        
+        \lstinputlisting[language=python, linerange={15-19}, firstnumber = 15]{src/u7/commands_client.py}
+    \end{itemize}
+
+\end{enumerate}
+
+\end{document}

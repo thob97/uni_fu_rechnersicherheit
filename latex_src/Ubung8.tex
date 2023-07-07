@@ -1,0 +1,179 @@
+\input{src/header}
+\graphicspath{ {./src/} } 
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{mindmap}
+
+\newcommand{\dozent}{Volker Roth}
+\newcommand{\tutor}{Oliver Wiese}
+\newcommand{\tutoriumNo}{02\\Materialien: Latex, VSC, Skript}
+\newcommand{\ubungNo}{08}
+\newcommand{\veranstaltung}{Rechnersicherheit}
+\newcommand{\semester}{SoSe 21}
+
+% /////////////////////// BEGIN DOKUMENT /////////////////////////
+\begin{document}
+\input{src/titlepage}
+
+% /////////////////////// Task 1 /////////////////////////
+\section{Honeywords}
+Imagine you are advising the administrators of three websites (1.example.org, 2.example.org and 3.example.org) on the use of honeywords for their systems. The three web sites are run by different companies and managed by distinct administrators. You want to explain the configuration of honeywords and it’s benefits using an example of two users, Alice and Bob, both having accounts on all three web sites. Alice wants to use three separate passwords for 1, 2 and 3, while Bob wants to use a single password for all web sites.
+
+
+\textbf{Remark 1}: You must assume that the process how decoys are generated is publicly known.
+\textbf{Remark 2}: The goal of this exercise is the thought-experiment of implementing honeywords in practice. You are allowed to make your own assumptions where necessary and realistic, and are encouraged to use common sense where necessary. In particular, watch out for difficult or undesirable situations (e.g. if your solution would require that all websites have to share the same password database).
+\begin{enumerate}[(a)]
+    % /////////////////////// a /////////////////////////
+    \item {\itshape Suggest how websites 1 and 2 should implement honeywords to protect Alice and Bob from password cracking. Explain your decisions. (If you need to, you may make assumptions on how Alice’s and Bob’s passwords look like on 1 and 2 - for example enforced by the password registration process.)}
+    \begin{enumerate}[1.]
+        \item {\itshape How should decoy passwords be constructed?}
+        
+        \begin{itemize}
+            \item The following points are significant
+            \begin{itemize}
+                \item The honeywords should be believable (not just random chars), else they are easily detectable  after cracking.
+                \item They should not be to hard to crack. Otherwise the adversary would simply skip the password.
+                \item They should not be easy to crack, otherwise it is too suspicious.
+                \item If possible, the user should not accidentally access the decoy account, e.g. if he enters his password incorrectly (not too similar passwords). Else this would result in false alarms.
+                \item The honeywords should not be too similar to the user password. Otherwise the adversary could possibly derive the correct password from the honeywords.
+            \end{itemize}
+            
+            \item We came up with three ideas for creating honeywords:
+            \begin{enumerate}[1.]
+                \item Take the user's password and remove, change and or add chars. (e.g. added or changed chars can be random or depend on other users for data like his age, name, phone number)
+                \item Check the password of the user and with this create your own passwords accordingly. E.g. by using a dictionary and some random chars.
+                \item Check the password of the user and choose a similar password with a password model. E.g. users password and password model password have similar probability's. 
+            \end{enumerate}
+            
+            \item And we found three generating functions for creating honeywords in the decoy password paper:
+            \begin{enumerate}[1.]
+                \item \textbf{Tweaking}
+                \begin{itemize}
+                    \item \underline{Pro:}
+                    \begin{itemize}
+                        \item Is easy to implement
+                    \end{itemize}
+                
+                    \item \underline{Con:}
+                    \begin{itemize}
+                        \item Head of PW is alwasy exposed
+                        \item Requires a random user password in order to create good honeywords from it
+                    \end{itemize}
+                \end{itemize}
+                
+                \item \textbf{Chaffing}
+                \begin{itemize}
+                    \item \underline{Pro:}
+                    \begin{itemize}
+                        \item Honeywords and the real password are not distinguishable. (honeywords look realistic)
+                    \end{itemize}
+                
+                    \item \underline{Con:}
+                    \begin{itemize}
+                        \item A good password model is needed
+                    \end{itemize}
+                \end{itemize}
+                
+                \item \textbf{Random pick}
+                \begin{itemize}
+                    \item \underline{Pro:}
+                    \begin{itemize}
+                        \item Is easy to implement
+                        \item Easy to use in combination with password managers
+                    \end{itemize}
+                
+                    \item \underline{Con:}
+                    \begin{itemize}
+                        \item Irritating for user (as he has to pick multiple passwords)
+                        \item User has to forget the honeywords! There is a high chance that he will log into an decoy account
+                    \end{itemize}
+                \end{itemize}
+
+            \end{enumerate}
+            We decided to 'use' Chaffing, as this way the honeywords are not too similar and not distinguishable of the user's password.
+        \end{itemize}
+        
+        
+        \item {\itshape How many decoy passwords should be generated?}
+        \begin{itemize}
+            \item Many, so that the chance that the adversary chooses a honeyword is high.
+            \item But not too many, otherwise the adversary could possibly recognize a pattern in the honeywords and thus rule it out.
+        \end{itemize} 
+        In the paper N $\geq$ 10,000 is recommended for practical use.
+        
+    \end{enumerate}
+  
+      
+    % /////////////////////// b /////////////////////////
+    \item {\itshape Using your construction, analyze the success probability of an adversary impersonating Alice and Bob to 3, who successfully breaches (excluding the honeychecker)}
+    \begin{itemize}
+        \item {\itshape only 1.example.org or 2.example.org}
+        \begin{itemize}
+            \item We assume that the adversary cannot distinguish between honeywords and the real password.
+            \item This results that the adverse for Bob and Alice has a $\frac{1}{10,000}$ chance of guessing the correct password.
+        \end{itemize}
+        \item {\itshape both.}
+        \begin{itemize}
+            \item Since he has the password data from 1.example.org and 2.example.org, he could just \underline{compare them}. Then he might notice that \underline{one password is exactly the same} in both data sets, and this would indeed be the correct password. However, this does not affect Alice, as she has a different password for each page. $\rightarrow$ Alice $\frac{1}{10,000}$, Bob 1.
+            \item \underline{To get around this}, you could use the same honeywords for users who use exactly the same login data on different pages.
+            \item \underline{This only works for pages over which we have control}. Because the problem remains if Bob also has an account with the same login data on a page we do not own. Example: Bob has an account on 4.example.org that does not belong to us. 1.example.org and 4.example.org are affected by data leaks. Both sites use honeywords, but Bob used the same logins for both sites. If the adversary now compares the passwords, he would again notice the correct password.
+        \end{itemize}
+    \end{itemize}
+
+   
+    
+\end{enumerate}
+
+
+\newpage  
+% /////////////////////// Task 2 /////////////////////////
+\section{Recap Passwords}
+\begin{enumerate}[(a)]
+    % /////////////////////// a /////////////////////////
+    \item {\itshape We discussed different aspects of passwords. You should summarize and visualize them,e.g. drawing, painting,... (best case mind map)}
+    
+    \begin{tikzpicture}[mindmap, grow cyclic, rectangle, every node/.style=concept , concept color=orange!40, 
+    level 0/.append style={text width=10cm},
+	level 1/.append style={level distance=5cm,sibling angle=120, text width=2.5cm},
+	level 2/.append style={level distance=3.5cm,sibling angle=45, text width=1.5cm},
+	level 3/.append style={sibling angle=40, text width=1.2cm},]
+	\node{Passwords}
+            child [concept color=blue!30] { node {Strength}
+        	child { node {Password policies VL2}}
+        	child { node {Estimation VL12}}
+        	child { node {algorithms to determined strength}
+            	child { node {Shanon Entropie VL3}}
+            	child { node {Nist guessing entropy VL3}}
+            	child { node {Guesswork VL4}}
+            	child { node {Partial guessing attack VL4}}
+            	}
+        }
+        child [concept color=yellow!30] { node {How to securely handle data}
+        	child { node {Hash algorithms}}
+        	child { node {Random Salt & Pepper}}
+        	child { node {End to end communication}}
+        	child { node {Public \& private key authentication}}
+        	child { node {Input validation}}
+        	child { node {Honeywords}}
+        }
+        child { node {Cracking passwords \& Obtaining password models}
+        	child { node {Rainbow Tables VL11}
+        	    child { node {(cryptoanalytic) Time-memory trade off VL10}}
+        	}
+        	child { node {Context free grammars VL9}}
+        	child { node {Markov model VL6}
+            	child { node {Computing prob. from passwords VL7}}
+            	child { node {Sampling passwords VL7}}
+            	child { node {Enumerate passwords VL7}}
+            	child { node {Indexing Markov model VL8}}
+        	}
+        	child { node {Obtaining through asking VL5}}
+        };
+    \end{tikzpicture}
+
+\newpage
+\includegraphics[width=\textwidth]{src/u8/distracted-boyfriend(3).png}
+
+\end{enumerate}
+
+\end{document}

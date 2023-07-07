@@ -1,0 +1,5 @@
+import bcrypt
+password = password.encode('utf-8')
+hash_and_salt = bcrypt.hashpw(password_pepper, salt)
+
+salt = bcrypt.gensalt()

@@ -1,0 +1,67 @@
+\input{src/header}
+\graphicspath{ {./src/} } 
+\usepackage{hyperref}
+
+\newcommand{\dozent}{Volker Roth}
+\newcommand{\tutor}{Oliver Wiese}
+\newcommand{\tutoriumNo}{02\\Materialien: Latex, VSC, Skript}
+\newcommand{\ubungNo}{01}
+\newcommand{\veranstaltung}{Rechnersicherheit}
+\newcommand{\semester}{SoSe 21}
+
+
+\begin{document}
+\input{src/titlepage}
+
+
+\section{(Un-)salted password hashes}
+We used the simple brute force method and tried all possible password variations. With the given alphabet which contain 26 characters, this took your program $62^4 = 14.776.336$ many iterations. 
+\lstinputlisting[language=python,
+	firstnumber=4,
+	linerange={4-36}]										
+{src/u2/password/password.py}
+
+\newpage
+Moreover the also implemented the idea above with multithreading and multiprocessing.
+\newline As expected the implementation with multithreading changed nothing in terms of execution time.
+\newline The multiprocessing implementation however gave us quite a boost.
+\newline Below is a snippet of the multiprocessing code.
+\lstinputlisting[language=python,
+	firstnumber=1,
+	linerange={13-29,30-31,43-67}
+	]	
+{src/u2/password/password_multi_processing.py}
+\newline \includegraphics[width=1\linewidth]{src/terminal_u2_password.png}
+
+\section{Password breaches}
+\subsection*{a)}
+\includegraphics[width=0.8\linewidth]{src/passwd.png}
+\subsection*{b)}
+Passwords are not salted, so duplicates stand out. \\
+Even worse, the use of the block mode encrypts blocks of bytes separately, so you can see duplicate parts of the passwords. You can see this in the comic, for example the later half of the passwords with hint \enquote{Best TOS Episode} and \enquote{sugarland} are the same, and the first half of the passwords with hints \enquote{Best TOS Episode} and \enquote{sexy earlobes} are the same. That's why the comics calls it a crossword puzzle. \\
+Password hints should maybe also be encrypted?
+
+\newpage
+\section{Project}
+In the following you will see a snippet of python code from the server side.
+\newline We used threads and sockets for the task
+\lstinputlisting[language=python,
+	firstnumber=30,
+	linerange={30-70}]											
+{src/u2/chat/server.py}
+
+\newpage
+Here is the snippet from the client side.
+\lstinputlisting[language=python,
+	firstnumber=16,
+	linerange={16-35}]	
+{src/u2/chat/client.py}
+
+The following picture shows 2 clients connected to the server and communicate with each other.
+\newline\includegraphics[width=1\linewidth]{src/terminal_u2.png}
+This is the log file produced by the server.
+\lstinputlisting[language=python,]	
+{src/u2/chat/log.txt}
+
+\end{document}
+

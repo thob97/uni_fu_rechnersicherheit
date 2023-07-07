@@ -1,0 +1,158 @@
+\input{src/header}
+\graphicspath{ {./src/} } 
+\usepackage{hyperref}
+
+\newcommand{\dozent}{Volker Roth}
+\newcommand{\tutor}{Oliver Wiese}
+\newcommand{\tutoriumNo}{02\\Materialien: Latex, VSC, Skript}
+\newcommand{\ubungNo}{05}
+\newcommand{\veranstaltung}{Rechnersicherheit}
+\newcommand{\semester}{SoSe 21}
+
+% /////////////////////// BEGIN DOKUMENT /////////////////////////
+\begin{document}
+\input{src/titlepage}
+
+% /////////////////////// Task 1 /////////////////////////
+\section{Shoulder surfer meets Markov}
+\begin{enumerate}[(a)]
+    % /////////////////////// a /////////////////////////
+    \item {\itshape Give  an  algorithm  with  observed  digits  (less  than  4)  as  input  and  outputs  three likely PINs.}
+    \begin{enumerate}[1.]
+        \item We assume that we always observe only the first digit of the PIN.
+        \item First we preprocessed the Markov model that we expect to get thought a file. We expect this form of representation, because we defined it like that in the last exercise sheet. The following snipped shows the form we expect of a Markov model:
+        \lstinputlisting[language=python,linerange={13-24}]{src/u5/markov_model.txt}
+        Here is the Markov model after we preprocessed it. Now it is ordered from highest possibility that that char is taken to lowest:
+        \lstinputlisting[language=python,linerange={44-55}]{src/u5/processed_markov_model.txt}
+        And here is the code on how we did it:
+        \lstinputlisting[language=python,linerange={5-40}]{src/u5/guess_pin.py}
+        
+
+\newpage
+        \item After that we ran the following function. It takes the Markov model, the processed Markov model, the observed digit, the number of PINs we want to get and an accuracy int as input. The function is greedy and always takes the next digit with the highest possibility, which is quite easy, because of the preprocessing we did with the Markov model. After it found more PINs than 'num\_of\_output\_pins' it drops the PIN with the lowest total possibility. 
+        \lstinputlisting[language=python,linerange={42-71}]{src/u5/guess_pin.py}
+
+        
+    \end{enumerate}
+    
+
+    % /////////////////////// b /////////////////////////
+    \item {\itshape Discuss the efficiency and success rate of your algorithm.}
+   \begin{itemize}
+       \item The efficiency and success rate of your algorithm dependents on the accuracy variable. As our algorithm has three for loops, its efficiency is accuracy$^{3}$. 
+       \item Accuracy should/ can not be higher than the length of the alphabet, that is 10. So if we choose accuracy = 10 we basically try each possible combination. 
+       \item However with accuracy = 10 our algorithm always succeeds and returns the most likley 3 PINs. When we lower the accuracy we might not get the best 3 PINs, but in our tests half of that (5) seemed sufficient. What follows is a picture of the 3 most likely PINs of the Markov model from the RockYou dataset and how different accuracy values affect these PINs.
+       
+       \includegraphics[width=\linewidth]{src/u5/output.png}
+
+   \end{itemize}
+
+\newpage
+    % /////////////////////// c /////////////////////////
+    \item {\itshape Revisit the first-order Markov model from the previous assignment. What are your guesses if the adversary observes only a one.}
+   \begin{itemize}
+       \item The expected input Markov model (snipped):
+       \lstinputlisting[language=python,linerange={8-20}]{src/u5/u4_markov_model.txt}
+       
+       \item After the preprocessing (snipped):
+       \lstinputlisting[language=python,linerange={20-55}]{src/u5/p_u4_markov_model.txt}
+       
+       \item The output:
+       
+       \includegraphics[width=\linewidth]{src/u5/output2.png}
+   \end{itemize}
+   
+    
+\end{enumerate}
+
+% /////////////////////// Task 2 /////////////////////////
+\section{Shoulder surfer meets Markov II (Bonus)}
+\begin{enumerate}[(a)]
+    % /////////////////////// a /////////////////////////
+    \item {\itshape Create a markov model of 4- and 6-digit PINs based on the RockYoudata set using Python. You can either filter them by yourself or use the dataset ofMarkert et al.}
+    \begin{itemize}
+        \item After some preprocessing of the RockYou dataset and error filtering (like in the last exercise sheet) we just filtered the dataset with a regex. Snipped of the code:
+       \lstinputlisting[language=python,linerange={50-57, 62-67}]{src/u5/rockyou_to_4-6PIN.py}
+        Snippet of the filtered dataset:
+       \lstinputlisting[language=python,linerange={0-20}]{src/u5/4_6_PIN.txt}
+
+    \end{itemize}
+    
+    % /////////////////////// b /////////////////////////
+    \item {\itshape Implement your above algorithm in Python.}
+    \begin{itemize}
+        \item First we load the dataset and add the bot and top symbol to every PIN
+        \lstinputlisting[language=python,linerange={10-15}]{src/u5/dataset_to_markov_model.py}
+\newpage        
+        \item Then we count the occurrences of every char in the alphabet:
+        \lstinputlisting[language=python,linerange={17-33}]{src/u5/dataset_to_markov_model.py}
+        \includegraphics[width=\linewidth]{src/u5/output_occ.png}
+        
+        \item After that we create the alphabet for the Markov model (the edges) and count the occurrences of these chars (edges) as well:
+        \lstinputlisting[language=python,linerange={36-41}]{src/u5/dataset_to_markov_model.py}
+        \includegraphics[width=\linewidth]{src/u5/output_occ_2.png}
+        
+        \item And at last we calculate the Markov modell with these occurrences:
+        \lstinputlisting[language=python,linerange={43-50}]{src/u5/dataset_to_markov_model.py}
+
+    \end{itemize}
+
+    % /////////////////////// c /////////////////////////
+    \item {\itshape Evaluate  your  algorithms.  What  is  the  advantage  of  your  algorithms compared to a random guess?}
+    \begin{itemize}
+        \item If we use the Markov model like in task 1. and output three likely PINs when we observe one digit. We get the following results: 
+        
+        \includegraphics[width=\linewidth]{src/u5/output3.png}
+        \\ These PINs are better than a random guess, as they are much more likely to occur. A random guess would have the probability of $\frac{1}{10^{3}}$ = 0.001, which is just a third compared to our most likely PIN: ~ 0.0032.  
+        
+    \end{itemize}
+
+\end{enumerate}
+
+
+% /////////////////////// Task 3 /////////////////////////
+\section{Follow up}
+
+
+Please read Sections 4.1 and 4.2 of the paper3and answer the following questions:
+\begin{enumerate}[(a)]
+    
+    % /////////////////////// a /////////////////////////
+    \item {\itshape What are the differences to the algorithm from the lecture?}
+    
+    
+    % /////////////////////// b /////////////////////////
+    \item {\itshape Why do you think Algorithm 1 is different?}
+
+
+    % /////////////////////// c /////////////////////////
+    \item {\itshape What are the consequences for storage and runtime?}
+
+\end{enumerate}
+
+
+Compare algorithm from the lecture to algorithms their algorithms:
+\begin{enumerate}[(a)]
+
+    % /////////////////////// a /////////////////////////
+    \item {\itshape partial\_size1(current\_length, level)}
+    
+    % /////////////////////// b /////////////////////////
+    \item {\itshape partial\_size2(current\_length, prev\_char, level)}
+    
+    % /////////////////////// pseudo c  /////////////////////////
+    \item {\itshape Is a table size of maxlength · maxlevel enough?}
+
+    \begin{enumerate}[1.]
+        \item In the lecture l stands for level / rank, while in the note, it stands for the length of a password
+        \item In the lecture $p_1$ or probability($e_1$) stands for the probability of an char / edge, while in the note they use $\nu$ (Ny) 
+        \item For the probability of a path / password, they use the symbol $\theta$ (Theta)
+        \item They don't show how to save the save the information, which is goatherd with partial\_size1. While algorithm 1 does show that the information gets stored in a table.
+        \item The partial\_size1 algorithm supposes that the Markov model is of order 1. While the Algorithm 1 does not.
+        \item The partial\_size1 and 2 algorithms only allow passwords with a fixed (same) length, while the algorithm from the lecture allows passwords of different sizes.
+        \item Also the table size of max\_length · max\_level is not enough. In the paper for partial\_size1 they argue that a 2D-Array of size l times number of levels should be sufficient. That is the case for partial\_size1, as each probability is independent of one another. But not for partial\_size2, because it works for Markov models order 1, thus it loses the independence of probability and a larger table will be needed.
+    \end{enumerate}
+
+
+\end{enumerate}
+\end{document}

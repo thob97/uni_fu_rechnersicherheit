@@ -1,0 +1,62 @@
+[main]	INFO	profile include tests: None
+[main]	INFO	profile exclude tests: None
+[main]	INFO	cli include tests: None
+[main]	INFO	cli exclude tests: None
+[main]	INFO	running on Python 3.9.4
+[node_visitor]	INFO	Unable to find qualified name for module: user_manager.py
+Run started:2021-05-27 18:17:37.590211
+
+Test results:
+>> Issue: [B303:blacklist] Use of insecure MD2, MD4, MD5, or SHA1 hash function.
+   Severity: Medium   Confidence: High
+   Location: user_manager.py:127
+   More Info: https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b303-md5
+126	                controlhash = content[2]
+127	                passwdhash = hashlib.md5((salt + passwd).encode('utf-8')).hexdigest()
+128	                break
+
+--------------------------------------------------
+>> Issue: [B303:blacklist] Use of insecure MD2, MD4, MD5, or SHA1 hash function.
+   Severity: Medium   Confidence: High
+   Location: user_manager.py:145
+   More Info: https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b303-md5
+144	        salt = self.__getsalt()
+145	        passwdhash = hashlib.md5((salt + passwd).encode('utf-8')).hexdigest()
+146	        del passwd
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   Location: user_manager.py:190
+   More Info: https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
+189	        salt = ""
+190	        length = random.randint(8, 15)
+191	        for i in range(length):
+
+--------------------------------------------------
+>> Issue: [B311:blacklist] Standard pseudo-random generators are not suitable for security/cryptographic purposes.
+   Severity: Low   Confidence: High
+   Location: user_manager.py:195
+   More Info: https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b311-random
+194	            while next_char == ':':
+195	                next_char = chr(random.randint(33, 127))
+196	            salt += next_char
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 162
+	Total lines skipped (#nosec): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0.0
+		Low: 2.0
+		Medium: 2.0
+		High: 0.0
+	Total issues (by confidence):
+		Undefined: 0.0
+		Low: 0.0
+		Medium: 0.0
+		High: 4.0
+Files skipped (0):
